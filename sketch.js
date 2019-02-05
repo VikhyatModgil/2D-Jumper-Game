@@ -2,6 +2,11 @@ let yoff = 0;
 var engine;
 var box1;
 var floor;
+var score = 0;
+var arrayBulletX = [];
+var arrayBulletY = [];
+var playerX;
+var playerY;
 
 var Engine = Matter.Engine,
     World = Matter.World,
@@ -41,6 +46,8 @@ var backgroundScene = function(){
 };
 
     function player(){
+    playerX = box1.position.x;
+    playerY = Math.floor(box1.position.y);
     fill(160,214,196);
     rect(box1.position.x,box1.position.y,80,80);
     fill(255,255,255);
@@ -58,17 +65,49 @@ var backgroundScene = function(){
         Matter.Body.applyForce( box1, {x: box1.position.x, y: box1.position.y}, {x: .3, y: 0});
     }
     if (keyIsDown(38)) {
-            Matter.Body.applyForce( box1, {x: box1.position.x, y: box1.position.y}, {x: 0, y: -.008});
+            Matter.Body.applyForce( box1, {x: box1.position.x, y: box1.position.y}, {x: 0, y: -.01});
         }
     if(box1.position.y <= 0){
         Matter.Body.applyForce( box1, {x: box1.position.x, y: box1.position.y}, {x: 0, y: .5});
     }
     }
+    arrayBulletY[0] = [playerY];
+    arrayBulletX = [500];
+    console.log(arrayBulletX);
 
-    function obstacles(){
+    function bullet(x, y, rocketId){
+        arrayBulletX[0] = (arrayBulletX - 5);
+        arrayBulletY[1] = (20);
+        //bullet head
+        fill(255,0,0);
+        ellipse(arrayBulletX[0],arrayBulletY[0],30,20);
+        //bullet body
+        fill(0,0,0);
+        rect(arrayBulletX[0],arrayBulletY[0]-10,50,20);
+        if(arrayBulletX[0] < 10){
+            arrayBulletX[0] = width;
+            arrayBulletY[0] = Math.floor(playerY);
+        }
+        if(playerX > arrayBulletX[0]+50 && playerX-50 > arrayBulletX[0] && playerY < arrayBulletY[0]+100 && playerY > arrayBulletY[0]-0){
+            for(var i = 0; i < 200; ++i){
+                fill(255,0,0);
+                ellipse(playerX+50,playerY+50,i,i);
+                fill(255,200,0);
+                ellipse(playerX+50,playerY+50,i-50,i-50);
+                score = 0;
+            }
+            
+        }
+    }
+    function obstacles(score){
+        var numRocket = Math.ceil(score/1000)+1;
+        bullet(2,2,(numRocket-1));
     }
   function draw() {
     backgroundScene();
     player();
-    obstacles();
+    obstacles(score);
+    textSize(width/10);
+    text(score, width/2, 90);
+    score++;
   }
